@@ -1,71 +1,82 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿body {
+  padding-top: 50px;
+  padding-bottom: 20px;
 }
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
+/* Page Selector */
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+  .main-panel {
+      margin-top: 30px;
   }
+
+  .folder-list {
+      margin: 0;
+      padding: 0;
+  }
+
+  .folder-list li {
+      list-style-type: none;
+      margin-bottom: 7px;
+      border: 1px solid #eee;
+      padding: 5px;
+  }
+
+
+  .folder-list li a {
+      font-weight: bold;
+      font-size: 13px;
+      /*display: block;
+      padding: 5px 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;*/
+  }
+
+  .folder-list li a:hover,
+  .folder-list li a.selected {
+      /*background-color: dodgerblue;*/
+      /*color: white;*/
+      /*padding: 5px 10px;*/
+      text-decoration: none;
+  }
+
+  .folder-list li a span.folder-icon {
+      margin-right: 10px;
+  }
+
+/* End Page Selector*/
+
+.scroll-overflow {
+  overflow-x: scroll;
+  max-height: 600px;
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+.glyphicon-spin {
+-webkit-animation: spin 1000ms infinite linear;
+animation: spin 1000ms infinite linear;
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+.checked-result h4 {
+  margin-bottom: 0px;
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+@-webkit-keyframes spin {
+0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
 }
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
+100% {
+  -webkit-transform: rotate(359deg);
+  transform: rotate(359deg);
 }
-
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
 }
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+@keyframes spin {
+0% {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+100% {
+  -webkit-transform: rotate(359deg);
+  transform: rotate(359deg);
+}
 }

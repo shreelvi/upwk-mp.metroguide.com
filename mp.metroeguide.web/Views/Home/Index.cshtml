@@ -1,8 +1,65 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="jumbotron" style="background-color: dodgerblue; color: white; text-shadow: 1px 1px 1px rgba(0,0,0,0.4)">
+    <h1>Metro eGuide</h1>
+    <p class="lead">Management Portal</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Page Selector</h2>
+        <p>Manage your folders, pages, and links. Add, Edit, Delete. </p>
+        <p><a class="btn btn-default" href="/manage">Manage &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Page Copier</h2>
+        <p>
+            Copy pages and their links from the Azure database to the EC2 Database.
+            Allows for management of all page options and adding/editing/removing links prior to insert.
+        </p>
+        <p><a class="btn btn-default" href="/copy">Copy &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Bulk Insert</h2>
+        <p>
+            Provides an excel like interface to insert many links at once.
+            Allows for saving and editing of "sheets" before publishing links to the web.
+        </p>
+        <p>
+            <a class="btn btn-default" href="/bulkInsert">New Sheet &raquo;</a>
+            <a class="btn btn-default pull-right" href="/bulkInsert#viewSheets">
+                <span class="glyphicon glyphicon-folder-open"></span>&nbsp;
+                Saved Sheets
+            </a>
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Client Manager</h2>
+        <p>
+            Manage all facets of a client. Add, Edit, Delete.
+        </p>
+        <p><a class="btn btn-default" href="/clients">Manage &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Find &amp; Replace</h2>
+        <p>
+            Find and replace link titles and urls.
+        </p>
+        <p>
+            <a class="btn btn-default" href="/findReplace">Find &amp; Replace &raquo;</a>
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Link Checker</h2>
+        <p>
+            Review the status of links
+        </p>
+        <p>
+            <a class="btn btn-default" href="/linkChecker">Check Links &raquo;</a>
+        </p>
+    </div>
 </div>

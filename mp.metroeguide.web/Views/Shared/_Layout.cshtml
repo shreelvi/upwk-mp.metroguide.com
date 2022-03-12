@@ -1,48 +1,77 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    var activeClass = "class=active";
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - mp.metroeguide.web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/toastr.min.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">mp.metroeguide.web</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+    <div class="navbar navbar-default navbar-fixed-top">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+                @Html.ActionLink("Metro eGuide MP", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li @if (ViewBag.ActivePage == "manage") { @activeClass ; }>
+                        @Html.ActionLink("Page Selector", "Index", "manage")
+                    </li>
+                    <li @if (ViewBag.ActivePage == "copy") { @activeClass; }>
+                        @Html.ActionLink("Page Copier", "Index", "copy")
+                    </li>
+                    <li @if (ViewBag.ActivePage == "bulk") { @activeClass; }>
+                        @Html.ActionLink("Bulk Insert", "Index", "bulkInsert")
+                    </li>
+                    <li @if (ViewBag.ActivePage == "clients") { @activeClass; }>
+                        @Html.ActionLink("Client Manager", "Index", "clients")
+                    </li>
+                    <li @if (ViewBag.ActivePage == "linkViewer") { @activeClass; }>
+                        @Html.ActionLink("Link Viewer", "Index", "linkViewer")
+                    </li>
+                    <li @if (ViewBag.ActivePage == "findReplace") { @activeClass; }>
+                        @Html.ActionLink("Find & Replace", "Index", "findReplace")
+                    </li>
+                    <li @if (ViewBag.ActivePage == "linkChecker") { @activeClass; }>
+                        @Html.ActionLink("Link Checker", "Index", "linkChecker")
+                    </li>
+                </ul>
+            </div>
+    </div>
+    <div class="container-fluid body-content">
+        <div class="row">
+            <div class="col-xs-12">
+                @RenderBody()
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - Metro eGuide</p>
+                </footer>
+            </div>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - mp.metroeguide.web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/scripts/vendor/jquery-1.10.2.js"></script>
+    <script src="~/js/scripts/vendor/bootstrap.js"></script>
+    <script src="~/js/scripts/vendor/respond.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/scripts/vendor/knockout-3.3.0.js"></script>
+    <script src="~/js/scripts/koHandlers/showModal.js"></script>
+    <script src="~/js/scripts/vendor/pager.min.js"></script>
+    <script src="~/js/scripts/vendor/moment.js"></script>
+    <script src="~/js/scripts/vendor/toastr.min.js"></script>
+    <script src="~/js/scripts/dataService.js"></script>
+    <script src="~/js/scripts/reusables/foldersList.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
