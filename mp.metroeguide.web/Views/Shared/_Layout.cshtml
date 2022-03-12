@@ -8,9 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - mp.metroeguide.web</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/toastr.min.css" />
+    <link rel="stylesheet" href="~/css/bundle.css" />
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
@@ -60,17 +58,11 @@
         </div>
     </div>
 
-    <script src="~/js/scripts/vendor/jquery-1.10.2.js"></script>
-    <script src="~/js/scripts/vendor/bootstrap.js"></script>
-    <script src="~/js/scripts/vendor/respond.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/scripts/vendor/knockout-3.3.0.js"></script>
-    <script src="~/js/scripts/koHandlers/showModal.js"></script>
-    <script src="~/js/scripts/vendor/pager.min.js"></script>
-    <script src="~/js/scripts/vendor/moment.js"></script>
-    <script src="~/js/scripts/vendor/toastr.min.js"></script>
-    <script src="~/js/scripts/dataService.js"></script>
-    <script src="~/js/scripts/reusables/foldersList.js"></script>
+    <script src="~/js/bundles/jquery.js"></script>
+    <script src="~/js/bundles/bootstrap.js"></script>
+    <script src="~/js/bundles/knockout.js"></script>
+    <script src="~/js/bundles/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
