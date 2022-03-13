@@ -61,15 +61,15 @@ namespace mp.metroeguide.web
                     "js/scripts/pageManage/models.js",
                     "js/scripts/pageManage/pageManageVm.js");
 
-                pipeline.AddJavaScriptBundle("js/bundles/linkViewer.js", 
+                pipeline.AddJavaScriptBundle("/js/bundles/linkViewer.js", 
                     "js/scripts/koHandlers/iFrameBinder.js",
                     "js/scripts/models/LinkModel.js", 
                     "js/scripts/linkViewer/linkViewerVm.js");
 
-                pipeline.AddJavaScriptBundle("js/bundles/findReplace.js", 
+                pipeline.AddJavaScriptBundle("/js/bundles/findReplace.js", 
                     "js/scripts/findReplace/findReplaceVm.js");
 
-                pipeline.AddJavaScriptBundle("js/bundles/linkChecker.js", 
+                pipeline.AddJavaScriptBundle("/js/bundles/linkChecker.js", 
                     "js/scripts/koHandlers/img.js", 
                     "js/scripts/linkChecker/models.js",
                     "js/scripts/linkChecker/linkCheckerVm.js");

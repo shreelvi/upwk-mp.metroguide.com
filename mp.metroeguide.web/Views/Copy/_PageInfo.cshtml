@@ -1,0 +1,73 @@
+﻿<div data-bind="with: pageData">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" name="title" data-bind="value: title" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="metaKeys">Meta Keys</label>
+                <input type="text" class="form-control" name="metaKeys" data-bind="value: metaKeys" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="metaDesc">Meta Description</label>
+                <input type="text" class="form-control" name="metaDesc" data-bind="value: metaDesc" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="pageRoute">Page Route</label>
+                <input type="text" class="form-control" name="pageRoute" data-bind="value:route" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="zipCode">Zipcode</label>
+                <input type="text" class="form-control" name="zipCode" data-bind="value: zipcode" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label>Canonical Url</label>
+                <input type="text" class="form-control" data-bind="value: canonicalUrl" />
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea class="form-control" name="comments" data-bind="value: comments"></textarea>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="headerHtml">Header Html</label>
+                <textarea class="form-control" name="headerHtml" data-bind="value: headerHtml"></textarea>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <label for="footerHtml">Footer Html</label>
+                <textarea class="form-control" name="footerHtml" data-bind="value: footerHtml"></textarea>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" data-bind="checked: autoOrdering" /> Auto Ordering
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

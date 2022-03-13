@@ -1,0 +1,267 @@
+﻿
+@{
+    ViewBag.Title = "Bulk Insert";
+}
+
+@section head {
+    <script src="~/js/scripts/vendor/handsontable/dist/handsontable.full.min.js"></script>
+    <link rel="stylesheet" href="~/js/Scripts/vendor/handsontable/dist/handsontable.full.css" />
+}
+
+<div class="main-panel">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-left">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <select class="form-control" 
+                                data-bind="options: savedSheets(), optionsText: 'name', value: selectedSheet, optionsCaption: 'Load a saved sheet'">
+                        </select>
+                        <div class="btn btn-default" data-bind="click: loadSelectedForm">
+                            Load
+                        </div>
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+            <button type="button" id="publish-sheet" class="btn btn-default pull-right">
+                <span class="glyphicon glyphicon-floppy-open"></span>
+                Publish
+            </button>
+            <button type="button" id="save-sheet" class="btn btn-default pull-right" style="margin-right: 20px;">
+                <span class="glyphicon glyphicon-save"></span>
+                Save Sheet
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 id="sheet-title"></h3>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 15px;">
+        <div class="col-xs-12">
+            <div id="excel-table"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="save-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Save worksheet as...</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Sheet Title</label>
+                    <input type="text" id="pending-sheet-title" class="form-control input-lg" /> 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-modal-btn" class="btn btn-primary">Save sheet</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="publish-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 class="text-danger">
+                    Are you sure you wish to publish these links?
+                </h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="publish-modal-btn" class="btn btn-success">Yes, publish</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+@section scripts {
+<script type="text/javascript" src="~/js/scripts/dataService.js"></script>
+<script type="text/javascript">
+    var hot = null,
+        Sheet = { id: 0, title: "" },
+        data = [];
+
+    var container = document.getElementById('excel-table'),
+        save = document.getElementById('save-sheet'),
+        publish = document.getElementById('publish-sheet'),
+        sheetTitle = document.getElementById('sheet-title'),
+        saveModal = document.getElementById('save-modal'),
+        saveModalButton = document.getElementById('save-modal-btn'),
+        newSheetTitle = document.getElementById('pending-sheet-title'),
+        publishModal = document.getElementById('publish-modal'),
+        publishModalButton = document.getElementById('publish-modal-btn'),
+        viewSavedSheetsButton = document.getElementById('view-saved-sheets');
+
+    configureNewSheet();
+
+    Handsontable.Dom.addEvent(save, 'click', function () {
+        if (Sheet.id == 0) {
+            $(saveModal).modal('toggle');
+        } else {
+            var newSheetData = getScrubbedData(Sheet.id);
+            dataService.sheets.remove(Sheet.id).done(function (d, res, xhr) {
+                if (res == "success") {
+                    dataService.sheets.createLinks(JSON.stringify({ sheetLinks: newSheetData})).done(function (val, res, xhr) {
+                        toastr.success('Sheet saved successfully!');
+                        ssVm.initialize();
+                    });
+                }
+            });
+        }
+    });
+
+    Handsontable.Dom.addEvent(publish, 'click', function () {
+        $(publishModal).modal('toggle');
+    });
+
+    $(saveModalButton).on('click', function () {
+        var trimTitle = $.trim($(newSheetTitle).val());
+        if (trimTitle.length <= 0) {
+            toastr.error('Please enter a title for this worksheet', 'Error!');
+        } else {
+            dataService.sheets.create(JSON.stringify({ name: trimTitle })).done(function (sheetId, res, xhr) {
+                if (res == "success") {
+
+                    var sheetData = JSON.stringify({ "sheetLinks": getScrubbedData(sheetId) });
+
+                    dataService.sheets.createLinks(sheetData).done(function (val, res, xhr) {
+                        Sheet.id = sheetId;
+                        Sheet.title = trimTitle;
+                        $(sheetTitle).html(trimTitle);
+                        $(newSheetTitle).val('');
+                        toastr.success('Sheet saved successfully!');
+                        $(saveModal).modal('toggle');
+                        ssVm.initialize();
+                    });
+                }
+            });
+        }
+
+    });
+
+    $(publishModalButton).on('click', function () {
+        //MAKE API CALL TO TRANSFER THE LINKS
+        var sheetData = JSON.stringify({ links: getScrubbedData() });
+        dataService.links.bulkCreate(sheetData).done(function (val, res, xhr) {
+            if (res == "success") {
+                //OnSuccess
+                hot.destroy();
+                configureNewSheet();
+                toastr.success('All links have been successfully published');
+                $(publishModal).modal('toggle');
+                ssVm.initialize();
+                if (Sheet.id != 0) {
+                    dataService.sheets.publish(Sheet.id).done(function (req, res, xhr) {
+                        console.log(res);
+                    });
+                }
+            }
+        });
+    });
+
+    function getScrubbedData(id) {
+        var gridData = hot.getData();
+        var scrubbedData = [];
+
+        $.each(gridData, function (rowKey, link) {
+
+            if (!isEmptyRow(link)) {
+                if (id != null || id != undefined) {
+                    link.sheetId = id;
+                }
+                scrubbedData.push(link);
+            }
+        }); 
+
+        return scrubbedData;
+    }
+
+    function isEmptyRow(rowData)
+    {
+        var c = 0;
+        for (var key in rowData) {
+            if (rowData.hasOwnProperty(key)) {
+                if (key == "sheetId" || key == "id") continue
+
+                if (rowData[key] != "" && rowData[key] != null && rowData[key] !== false)
+                    c++;
+            }
+
+            if (c >= 1)
+                break;
+        }
+
+        return (c >= 1) ? false : true;
+    }
+
+    function configureNewSheet() {
+        data = [{ pageId: 44, position: 0, title: "Example", url: "http://www.example.com", target: "_blank", isLink: false }];
+        sheetTitle.innerHTML = "New Bulk Link Worksheet";
+
+        hot = new Handsontable(container, {
+            data: data,
+            minSpareRows: 10,
+            fillHandle: true,
+            colHeaders: ["Page Id", "Position", "Title", "Url", "Target", "Is Link"],
+            colWidths: [40, 40, 200, 200, 50, 30],
+            columns: [
+                { data: 'pageId', type: 'numeric' },
+                { data: 'position', type: 'numeric' },
+                { data: 'title' },
+                { data: 'url' },
+                { data: 'target', editor: 'select', selectOptions: ['_self', '_blank', '_parent', '_top'] },
+                { data: 'isLink', type: 'checkbox'}
+            ],
+            rowHeaders: false,
+            stretchH: "all",
+            autoColumnSize: true,
+        });
+    }
+
+    var SavedSheetVm = function () {
+        var self = this;
+
+        self.savedSheets = ko.observableArray();
+        self.selectedSheet = ko.observable();
+
+        self.initialize = function () {
+            dataService.sheets.getAll().done(function (sheets) {
+                self.savedSheets.removeAll();
+                $.each(sheets.result, function (k, sheet) {
+                    self.savedSheets.push(sheet);
+                });
+            });
+        };
+
+        self.loadSelectedForm = function () {
+            dataService.sheets.getLinks(self.selectedSheet().id).done(function (links) {
+                if (links.result.length > 0) {
+                    Sheet.id = self.selectedSheet().id;
+                    hot.loadData(links.result);
+                    $(sheetTitle).html(self.selectedSheet().name);
+                    toastr.success('Successfully Loaded Sheet');
+                }
+                else {
+                    toastr.error('Error loading sheet');
+                }
+            });
+        };
+
+        self.initialize();
+    }
+
+    var ssVm = new SavedSheetVm();
+    ko.applyBindings(ssVm);
+</script>
+
+}

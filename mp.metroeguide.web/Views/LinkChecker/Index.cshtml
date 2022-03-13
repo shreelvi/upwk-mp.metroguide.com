@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Link Checker";
+}
+
+<h2>Link Checker</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="btn-group" style="margin: 20px 0;">
+
+            <button type="button" class="btn" 
+                    data-bind="css: { 'btn-success': activeTab() == 'good', 'btn-default': activeTab() != 'good'},  click: activateGoodLinks">
+                Good Links
+            </button>
+
+            <button type="button" class="btn" 
+                    data-bind="css: { 'btn-success': activeTab() == 'unmatched', 'btn-default': activeTab() != 'unmatched'}, click: activateUnmatchedLinks">
+                Redirected Links
+            </button>
+
+            <button type="button" class="btn" 
+                    data-bind="css: {'btn-success' : activeTab() == 'bad', 'btn-default': activeTab() != 'bad'},  click: activateBadLinks">
+                Bad Links
+            </button>
+
+        </div>
+    </div>
+    <div class="col-md-8 text-right">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li data-bind="css: { disabled: !hasPrevious() }">
+                    <a href="#" aria-label="Previous" data-bind="click: previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <!-- ko foreach: new Array(totalPages()) -->
+                <li data-bind="css: { active: $index() == $parent.activePage()}">
+                    <a data-bind="text: $index() + 1, click: $parent.activatePage.bind($data, $index())"></a>
+                </li>
+                <!-- /ko -->
+                <li data-bind="css: {disabled: !hasNext()}">
+                    <a href="#" aria-label="Next" data-bind="click: next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<section data-bind="visible: loading()">
+    <div class="text-center">
+        <img src="~/Images/gears.gif" />
+    </div>
+</section>
+<section data-bind="visible: !loading()">
+    <div class="row" data-bind="visible: paginatedResults().length <= 0">
+        <div class="col-xs-12">
+            <h1>No records found!</h1>
+        </div>
+    </div>
+    <div class="row" data-bind="visible: paginatedResults().length > 0">
+        <div class="col-xs-12" data-bind="foreach: paginatedResults">
+            <div class="panel" data-bind="css: { 'panel-success': status == 200, 'panel-danger': status == 500 }">
+                <div class="panel-heading">
+                    <div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-4">
+                        <a data-bind="attr: { href: 'https://s3.amazonaws.com/link-images-new/' + id + '.jpg'}" target="_blank">
+                            <img data-bind="img: { src: 'https://s3.amazonaws.com/link-images-new/' + id + '.jpg', fallback: '/images/linkchecker-default.jpg'}"  class="img-responsive"/>
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row checked-result">
+                            <div class="col-xs-12">
+                                <div>
+                                    <h4>
+                                        Url:
+                                        <button class="btn btn-warning btn-xs" data-bind="click: $parent.editUrl">
+                                            <span class="glyphicon glyphicon-edit"></span> Edit
+                                        </button>
+                                    </h4>
+                                </div>
+                                <a data-bind="attr: {href: url}, text: url" target="_blank"></a>
+                            </div>
+                            <div class="col-xs-12" data-bind="visible: $parent.activeTab() == 'unmatched'">
+                                <h4>Redirected Url: </h4>
+                                <a data-bind="attr: {href: endUrl, target: '_blank'}, text: endUrl"></a>
+                            </div>
+                            <div class="col-xs-12">
+                                <h4>Status: </h4>
+                                <span data-bind="text: status"></span>
+                            </div>
+                            <div class="col-xs-12">
+                                <h4>Time Checked: </h4>
+                                <span data-bind="text: timeChecked"></span>
+                            </div>
+                            <div class="col-xs-12">
+                                <h4>
+                                    Comments:
+                                    <button class="btn btn-warning btn-xs" data-bind="click: $parent.queueCommentUrl">
+                                            <span class="glyphicon glyphicon-edit"></span> Edit
+                                    </button>
+                                </h4>
+                                <span data-bind="text: comments"></span>
+                            </div>
+                            <div class="col-xs-12" data-bind="visible: exceptionMessage() != ''">
+                                <h4>Error Message: </h4>
+                                <span data-bind="text: exceptionMessage"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12" data-bind="visible: hierarchyLoading()">
+                                <img src="~/Images/gears.gif" style="height: 20px; width: 20px;"/>
+                            </div>
+                            <div class="col-xs-12" data-bind="visible: folderHierarchy().length > 0">
+                                <h4>Pages: </h4>
+                                <ul data-bind="foreach: folderHierarchy">
+                                    <li>
+                                        (<a data-bind="attr: {href: editLink, target: '_blank'}">View Page</a>)&nbsp;|
+                                        <span data-bind="html: hierarchy"></span>&nbsp;
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-success btn-block" data-bind="click: $parent.accepted">
+                            <span class="glyphicon glyphicon-check"></span> Mark Accepted
+                        </button>
+
+                        <br />
+                        <br />
+
+                        <button class="btn btn-block btn-primary" data-bind="click: $parent.seePages">
+                            <span class="glyphicon glyphicon-eye-open"></span> See Pages
+                        </button>
+
+                        <button class="btn btn-block btn-info" data-bind="click: $parent.whitelist">
+                            <span class="glyphicon glyphicon-plus"></span> Whitelist
+                        </button>
+
+
+                        <button class="btn btn-block btn-warning" data-bind="click: $parent.suspend">
+                            <span class="glyphicon glyphicon-time"></span> Suspend
+                        </button>
+
+                        <button class="btn btn-block btn-danger" data-bind="click: $parent.deactivateConfirm">
+                            <span class="glyphicon glyphicon-remove"></span> Deactivate
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="row">
+    <div class="col-xs-12">
+        <nav aria-label="Page navigation" class="pull-right">
+            <ul class="pagination">
+                <li data-bind="css: { disabled: !hasPrevious() }">
+                    <a href="#" aria-label="Previous" data-bind="click: previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <!-- ko foreach: new Array(totalPages()) -->
+                <li data-bind="css: { active: $index() == $parent.activePage()}">
+                    <a data-bind="text: $index() + 1, click: $parent.activatePage.bind($data, $index())"></a>
+                </li>
+                <!-- /ko -->
+                <li data-bind="css: {disabled: !hasNext()}">
+                    <a href="#" aria-label="Next" data-bind="click: next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@{ await Html.RenderPartialAsync("_UrlUpdateModal"); }
+@{ await Html.RenderPartialAsync("_CommentUpdateModal"); }
+@{ await Html.RenderPartialAsync("_UrlDeleteModal"); }
+
+
+@section scripts {
+    <script src="~/js/bundles/linkChecker.js"></script>
+
+    <script>
+        var vm = new LinkCheckerVm();
+        ko.applyBindings(vm);
+    </script>
+}

@@ -1,0 +1,32 @@
+﻿
+<div class="modal fade" data-bind="showModal: pendingDeleteLink, with: pendingDeleteLink">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>
+                            Are you sure you wish to remove this link?
+                        </h4>
+                    </div>
+                    <div class="col-xs-12">
+                        <p data-bind="text: title"></p>
+                    </div>
+                    <div class="col-xs-12 text-danger">
+                        <small>
+                            <strong>Note</strong>: This removal is only for the staged data and will not remove it from the azure database.<br/>
+                            Removing this link means that it will not show up in the new database.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" data-bind="click: $parent.removeLink">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Remove
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

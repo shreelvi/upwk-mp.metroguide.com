@@ -1,0 +1,31 @@
+﻿<div class="modal fade" data-bind="showModal: pendingUrl, with: pendingUrl">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Url - <span data-bind="text: url"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>Search Google</label><br />
+                            <a data-bind="attr: {href: 'http://www.google.com/search?q=' + fakeTitle(), target: '_blank' }, text: fakeTitle"></a>
+                        </div>
+                        <div class="form-group">
+                            <label>Url</label>
+                            <input type="text" name="url" class="form-control" data-bind="value: url" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 text-right">
+                        <button type="button" class="btn btn-info" data-bind="click: $parent.useRedirectedUrl">Use Redirected Url</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bind="click: $parent.updateUrl">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
