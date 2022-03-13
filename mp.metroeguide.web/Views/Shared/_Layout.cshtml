@@ -9,10 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - mp.metroeguide.web</title>
     <link rel="stylesheet" href="~/css/bundle.css" />
-    @if (IsSectionDefined("head"))
-    {
-        IgnoreSection("head"); 
-    }
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
@@ -69,6 +65,7 @@
     <script src="~/js/bundles/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("head", required: false);
     
 </body>
 </html>

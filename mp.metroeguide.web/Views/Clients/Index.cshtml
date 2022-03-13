@@ -1,0 +1,287 @@
+﻿
+@{
+    ViewBag.Title = "Client Manager";
+}
+
+@section head {
+    <style>
+
+        ul.filterList {
+            margin: 0 auto;
+            padding: 10px 0 0 0;
+        }
+
+        .filterList li {
+            list-style-type: none;
+            float: left;
+            padding-right: 10px;
+        }
+
+        .filterList li a {
+            font-weight: bold;
+        }
+
+        .filterList li a.text-danger:hover {
+            text-decoration: none;
+            cursor: default;
+            color: #a94442;
+        }
+    </style>
+}
+
+<div class="panel panel-default main-panel">
+    <div class="panel-body">
+        <div class="col-xs-12 col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="pull-left">
+                        <h4>Clients</h4>
+                    </div>
+                    <div class="pull-right">
+                        <button class="btn btn-sm btn-success" type="button" data-bind="click: addNewClient">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            New Client
+                        </button>
+                    </div> 
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body scroll-overflow">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <input 
+                                   data-bind="value: filterInput, valueUpdate: 'afterkeydown'"
+                                   type="text" class="form-control" placeholder="Filter by id or name" />
+                            <ul class="filterList" data-bind="foreach: filters">
+                                <li>
+                                    <a href="#" data-bind="text: displayText, click: $parent.activateFilter, css: { 'text-danger': value == $parent.activeFilter().value}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br />
+                    <ul class="folder-list" data-bind="foreach: filteredClients">
+                        <li>
+                            <a href="#" data-bind="click: $parent.activateClient, css: { selected: id == $parent.activeClient().id }">
+                                <span class="glyphicon glyphicon-spin glyphicon-refresh" data-bind="visible: loading() == true"></span> 
+                                <span data-bind="text: id + ' - ' + name()"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-8" data-bind="visible: activeClient().id !== -1 && activeClient().loading() !== true">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>Client Id: <span data-bind="text: activeClient().id"></span></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button type="button" class="btn btn-primary" id="btn_clientInfo" data-bind="click: setActiveTab.bind($data, 'clientInfo')">
+                        Client Info
+                    </button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" id="btn_communityProfiles" data-bind="click: setActiveTab.bind($data, 'communityProfiles')">
+                        Community Profiles
+                    </button>
+                </div>
+            </div>
+            <div id="clientInfo" data-bind="visible: activeTab() == 'clientInfo'">
+                <div class="row">
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" placeholder="Name" class="input-lg form-control" data-bind="value: activeClient().name" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="userId">User Id</label>
+                            <input type="text" name="userId" placeholder="User Id" class="input-lg form-control" data-bind="value: activeClient().userId" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="text" name="password" placeholder="password" class="input-lg form-control" data-bind="value: activeClient().password" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageSrc">Client Logo Image Url</label>
+                            <input type="text" 
+                                   name="clientLogoImageSrc" placeholder="Client Logo Image Url" 
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.clientLogoImageSrc" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageHref">Client Logo Image Destination Url</label>
+                            <input type="text" name="clientLogoImageHref" placeholder="Client Logo Image Destinantion Url"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.clientLogoImageHref" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageImageTarget">Client Logo Image Target</label>
+                            <input type="text" name="clientLogoImageTarget" placeholde="Client Logo Image Target"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.clientLogoImageTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageSrc">Product Logo Image Url</label>
+                            <input type="text" name="productLogoImageSrc" placeholder="Product Logo Image Url"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.productLogoImageSrc" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageHref">Product Logo Image Destination Url</label>
+                            <input type="text" name="productLogoImageHref" placeholder="Product Logo Image Destination Url"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.productLogoImageHref" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageTarget">Product Logo Image Target</label>
+                            <input type="text" name="productLogoImageTarget" placeholder="Product Logo Image Target"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.productLogoImageTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="backAnchorText">Back Anchor Text</label>
+                            <input type="text" name="backAnchorText" placeholder="Back Anchor Text"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.backAnchorText" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="backAnchorTarget">Back Anchor Target</label>
+                            <input type="text" name="backAnchorTarget" placeholder="Back Anchor Target"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.backAnchorTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="backAnchorUrl">Back Anchor Url</label>
+                            <input type="text" name="backAnchorUrl" placeholder="Back Anchor Url"
+                                   class="input-lg form-control" data-bind="value: activeClient().ILink.backAnchorUrl" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-6">
+                        <button type="button" class="btn btn-lg btn-danger" data-bind="click: confirmDeleteClient">Delete</button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="button" 
+                                class="btn btn-lg btn-success pull-right"
+                                data-bind="click: updateClient">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="communityProfiles" data-bind="visible: activeTab() == 'communityProfiles'">
+                <div class="row">
+                <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Folders
+                            </div>
+                            <div class="panel-body">
+                                <div id="folderDDList" data-bind="visible: foldersList().length > 0">
+                                    <div class="pull-left" data-bind="template: {name: 'folder-dd-template', foreach: foldersList}"></div>&nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Pages
+                            </div>
+                            <div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
+                                <div data-bind="visible: pages().length > 0">
+                                    <ul class="folder-list" data-bind="foreach: pages">
+                                        <li>
+                                            <a href="#" data-bind="click: $parent.addNewCommunityProfile">
+                                                <span data-bind="text: title"></span>
+                                                <span class="pull-right">
+                                                    <span class="glyphicon glyphicon-plus text-success"></span> 
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div data-bind="visible: pages().length <= 0">
+                                No Pages
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Selected Profiles
+                            </div>
+                            <div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
+                                <ul class="folder-list" data-bind="foreach: activeClient().communityProfiles">
+                                    <li>
+                                        <a href="#" data-bind="click: $parent.confirmDeleteCommunityProfile">
+                                            <span data-bind="text: title"></span>
+                                            <span class="pull-right">
+                                                <span class="glyphicon glyphicon-remove text-danger"></span> 
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: activeClient().loading() === true">
+            <h1 class="text-center">
+                <span class="glyphicon glyphicon-spin glyphicon-refresh"></span>
+            </h1>
+        </div>
+    </div>
+</div>
+
+@{ await Html.RenderPartialAsync("_CreateClientModal");}
+@{ await Html.RenderPartialAsync("_CommunityProfileDeleteModal");}
+@{ await Html.RenderPartialAsync("_ClientDeleteModal");}
+
+@section scripts {
+    @{ await Html.RenderPartialAsync("_DropdownFolderList"); }
+    <script type="text/javascript" src="~/js/bundles/clientManager.js"></script>
+
+    <script>
+        //This is not safe at all, we're assuming it's going to be an array, add some checking
+        ko.utils.stringStartsWithAny = function (string, startsWithArray) {
+            string = string || "";
+
+            return startsWithArray.every(function (char) {
+                return string.substring(0, char.length) === char ? true : false;
+            });
+        }
+
+        $(document).ready(function () {
+            var clientVm = new ClientVm();
+            ko.applyBindings(clientVm);
+        });
+    </script>
+
+}
