@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "Edit Page";
+}
+<div class="panel panel-default main-panel">
+    <div class="panel-body">
+        <div data-bind="visible: loading()">
+            <div class="text-center">
+                <img src="~/Images/gears.gif" />
+            </div>
+        </div>
+        <div class="row" data-bind="visible: !loading()">
+            <div class="col-md-12">
+                <ol class="breadcrumb" data-bind="foreach: folderHistory">
+                    <li>
+                        <!-- ko if: !isPage -->
+                        <a data-bind="attr: { href: linkHref }"><span data-bind="text: title"></span></a>
+                        <!-- /ko -->
+
+                        <!-- ko if: isPage -->
+                        <strong data-bind="text: title"></strong>
+                        <!-- /ko -->
+                    </li>
+                </ol>
+            </div>
+            <div class="col-xs-12">
+                <ul class="nav nav-pills">
+                    <li role="presentation" data-bind="attr: {'class': showLinks() ? 'active' : ''}">
+                        <a href="javascript:void(0);" data-bind="click: toggleLinks">Links</a>
+                    </li>
+                    <li role="presentation" data-bind="attr: {'class': showPageOptions() ? 'active' : ''}">
+                        <a href="javascript:void(0);" data-bind="click: togglePageOptions">Page Options</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12" style="margin-top: 20px;">
+                <div class="panel panel-default" data-bind="visible: showLinks()">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button type="button" class="btn btn-info" data-bind="visible: positionMovements().length > 0, click: savePositionMovements">
+                                    <span class="glyphicon glyphicon-floppy-save"></span>
+                                    Save Positions
+                                </button>
+                                <button type="button" class="btn btn-danger" data-bind="visible: positionMovements().length > 0, click: undoPositionMovements">
+                                    <span class="glyphicon glyphicon-floppy-remove"></span>
+                                    Undo Movements
+                                </button>
+                                <button type="button" class="btn btn-success" data-bind="click: showCreateLinkModal">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;
+                                    Add New Link
+                                </button>
+                                <a class="btn btn-success pull-right" target="_blank" data-bind="attr: {href: '/linkViewer/index/' + pageId }">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                    Link Viewer
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-xs-12">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Position</th>
+                                            <th>Id</th>
+                                            <th>Title</th>
+                                            <th>Target</th>
+                                            <th>Is Link?</th>
+                                            <th>Comments</th>
+                                            <th>Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="visible: !loading() && links().length <= 0">
+                                        <tr>
+                                            <td colspan="7">
+                                                There are no links on this page
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody data-bind="visible: !loading() && links().length > 0, foreach: sortedLinks">
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-xs btn-link"
+                                                        data-bind="enable: position() !== 0, click: $parent.positionDown">
+                                                    <span class="glyphicon glyphicon-chevron-up"></span>
+                                                </button>
+                                                <button type="button" class="btn btn-xs btn-link"
+                                                        data-bind="enable: ($index() !== ($parent.sortedLinks().length - 1)), click: $parent.positionUp">
+                                                    <span class="glyphicon glyphicon-chevron-down"></span>
+                                                </button>
+                                            </td>
+                                            <td data-bind="text: position"></td>
+                                            <td data-bind="text: id"></td>
+                                            <td>
+                                                <a data-bind="visible: url().length > 0, attr: { href: url, target: '_blank' }, text: title"></a>
+                                                <span data-bind="visible: url().length <= 0, text: title"></span>
+                                            </td>
+                                            <td data-bind="text: target"></td>
+                                            <td>
+                                                <span data-bind="visible: isLink()" class="label label-success">True</span>
+                                                <span data-bind="visible: !isLink()" class="label label-danger">False</span>
+                                            </td>
+                                            <td data-bind="text: comments"></td>
+                                            <td class="text-center">
+                                                <button class="btn btn-sm btn-primary" data-bind="click: $parent.editLink">Edit</button>
+                                                <button class="btn btn-sm btn-danger" data-bind="click: $parent.confirmDeleteLink">Delete</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @{ await Html.RenderPartialAsync("_PageOptions"); }
+            </div>
+        </div>
+    </div>
+</div>
+
+@{ await Html.RenderPartialAsync("_LinkCreateModal"); }
+@{ await Html.RenderPartialAsync("_LinkUpdateModal"); }
+@{ await Html.RenderPartialAsync("_LinkDeleteModal");}
+
+@section scripts {
+
+    <script type="text/javascript" src="~/js/bundles/pageManage.js"></script>
+    <script>
+        var pageManageVm = new PageManageVm();
+        ko.applyBindings(pageManageVm);
+    </script>
+}

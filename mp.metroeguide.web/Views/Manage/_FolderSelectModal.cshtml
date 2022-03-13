@@ -1,0 +1,19 @@
+﻿<div class="modal fade" data-bind="showModal: showFolderSelectModal" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" data-bind="click: closeFolderSelectModal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Select Folder</h4>
+            </div>
+            <div class="modal-body">
+            <div id="folderDDList" data-bind="visible: foldersList().length > 0">
+                <div data-bind="template: {name: 'folder-select-template', foreach: foldersList}"></div>&nbsp;&nbsp;
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-bind="click: closeFolderSelectModal">Close</button>
+                <button type="button" class="btn btn-primary" data-bind="click: selectFolder">Select folder</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

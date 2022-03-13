@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Find & Replace";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Find &amp; Replace</h2>
+
+<div class="panel panel-default main-panel">
+    <div class="panel-body">
+        <div data-bind="visible: loading()">
+            <div class="text-center">
+                <img src="~/Images/gears.gif" />
+            </div>
+        </div>
+        <div class="row" data-bind="visible: !loading()" style="display: none;">
+            <div class="col-md-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Find</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="searchTitle">Title</label>
+                            <input type="text" class="form-control" placeholder="Title" data-bind="value: searchTitle"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchUrl">Url</label>
+                            <input type="text" class="form-control" placeholder="Url" data-bind="value: searchUrl" />
+                        </div>
+                        <button type="button" class="btn btn-primary" data-bind="click: find">Find</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Replace</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="replaceTitle">Title</label>
+                            <input type="text" class="form-control" placeholder="Title"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="replaceUrl">Url</label>
+                            <input type="text" class="form-control" placeholder="Url" />
+                        </div>
+                        <button type="button" class="btn btn-success">Replace Selected</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>Found Links</h2>
+        <div data-bind="foreach: foundLinks">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Placeholder: Page Hierarchy
+                </div>
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript" src="~/js/bundles/findReplace.js"></script>
+    <script>
+        var findReplaceVm = new FindReplaceVm();
+        ko.applyBindings(findReplaceVm);
+    </script>
+}
