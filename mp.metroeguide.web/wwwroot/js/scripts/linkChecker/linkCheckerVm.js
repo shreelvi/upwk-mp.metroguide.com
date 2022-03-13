@@ -7,6 +7,7 @@
     self.goodLinks = ko.observableArray([]);
     self.unmatchedLinks = ko.observableArray([]);
     self.badLinks = ko.observableArray([]);
+    self.elevatedLinks = ko.observableArray([]);
 
     self.pendingUrl = ko.observable(null);
     self.pendingCommentUrl = ko.observable(null);
@@ -60,6 +61,23 @@
             dataService.checkedLinks.getAll('bad').done(function (data) {
                 if (data.result != null && data.result.length > 0) {
                     self.badLinks(ko.utils.arrayMap(data.result, function (linkData) {
+                        return new checkedLink(linkData);
+                    }));
+
+                }
+                self.loading(false);
+            });
+        }
+    };
+
+    self.activateElevatedLinks = function () {
+        self.activateTab('elevated');
+
+        if (self.elevatedLinks().length <= 0) {
+            self.loading(true);
+            dataService.checkedLinks.getAll('elevated').done(function (data) {
+                if (data.result != null && data.result.length > 0) {
+                    self.elevatedLinks(ko.utils.arrayMap(data.result, function (linkData) {
                         return new checkedLink(linkData);
                     }));
 
@@ -128,6 +146,12 @@
                     });
                     badLink.url(newLink.url());
                 }
+                else if (activeTab == "elevated") {
+                    var badLink = ko.utils.arrayFirst(self.elevatedLinks(), function (link) {
+                        return link.id == newLink.id;
+                    });
+                    elevatedLink.url(newLink.url());
+                }
 
                 toastr.success('Url successfully updated!');
                 self.pendingUrl(null);
@@ -142,7 +166,13 @@
 
 
     self.accepted = function (link) {
-        dataService.checkedLinks.remove(link.id).done(function () {
+        //dataService.checkedLinks.remove(link.id).done(function () {
+        //    self.removeLink(link);
+        //    toastr.success('Item successfully accepted');
+        //    self.checkReload(self.activeTab());
+        //});
+        var delRequest = ko.toJSON({ id: link.id, url: link.url });
+        dataService.checkedLinks.remove(delRequest).done(function () {
             self.removeLink(link);
             toastr.success('Item successfully accepted');
             self.checkReload(self.activeTab());
@@ -182,15 +212,13 @@
         });
     };
 
-    self.suspend = function (link) {
-        var suspendRequest = ko.toJSON({ urlId: link.urlId, url: link.url });
+    self.elevate = function (link) {
+        var elevateRequest = ko.toJSON({ linkId: link.id, url: link.url, urlId: link.urlId });
 
-        dataService.checkedLinks.suspend(suspendRequest).done(function () {
-            dataService.checkedLinks.remove(link.id).done(function () {
-                self.removeLink(link);
-                toastr.success('Item successfully suspended');
-                self.checkReload(self.activeTab());
-            });
+        dataService.checkedLinks.elevate(elevateRequest).done(function () {
+            self.removeLink(link);
+            toastr.success('Item successfully elevated');
+            self.checkReload(self.activeTab());
         });
     };
 
@@ -202,6 +230,8 @@
                 self.badLinks.remove(link);
             case 'unmatched':
                 self.unmatchedLinks.remove(link);
+            case 'elevated':
+                //self.elevatedLinks.remove(link);
         }
     };
 
@@ -255,6 +285,11 @@
                 self.activateUnmatchedLinks();
             }
         }
+        else if (linkType == 'elevated') {
+            if (self.elevatedLinks().length <= 0) {
+                self.activateElevatedLinks();
+            }
+        }
     }
 
     self.formatDate = function (date) {
@@ -273,6 +308,8 @@
             itemCount = self.badLinks().length;
         else if (self.activeTab() == 'unmatched')
             itemCount = self.unmatchedLinks().length;
+        else if (self.activeTab() == 'elevated')
+            itemCount = self.elevatedLinks().length;
 
         return Math.ceil(itemCount / self.pageSize);
     });
@@ -287,6 +324,9 @@
         }
         else if (self.activeTab() == 'unmatched') {
             return self.unmatchedLinks.slice(first, first + self.pageSize);
+        }
+        else if (self.activeTab() == 'elevated') {
+            return self.elevatedLinks.slice(first, first + self.pageSize);
         }
     });
 

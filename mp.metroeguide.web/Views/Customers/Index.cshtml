@@ -1,0 +1,662 @@
+﻿
+@{
+    ViewBag.Title = "Customer Manager";
+}
+
+@section head {
+    <style>
+
+        ul.filterList {
+            margin: 0 auto;
+            padding: 10px 0 0 0;
+        }
+
+        .filterList li {
+            list-style-type: none;
+            float: left;
+            padding-right: 10px;
+        }
+
+        .filterList li a {
+            font-weight: bold;
+        }
+
+        .filterList li a.text-danger:hover {
+            text-decoration: none;
+            cursor: default;
+            color: #a94442;
+        }
+    </style>
+}
+
+<div class="panel panel-default main-panel">
+    <div class="panel-body">
+        <div class="col-xs-12 col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="pull-left">
+                        <h4>Customers</h4>
+                    </div>
+                    <div class="pull-right">
+                        <button class="btn btn-sm btn-success" type="button" data-bind="click: addNewCustomer">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            New Customer
+                        </button>
+                    </div> 
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body scroll-overflow">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <input 
+                                   data-bind="value: filterInput, valueUpdate: 'afterkeydown'"
+                                   type="text" class="form-control" placeholder="Filter by id or name" />
+                            <ul class="filterList" data-bind="foreach: filters">
+                                <li>
+                                    <a href="#" data-bind="text: displayText, click: $parent.activateFilter, css: { 'text-danger': value == $parent.activeFilter().value}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br />
+                    <ul class="folder-list" data-bind="foreach: filteredCustomers">
+                        <li>
+                            <a href="#" data-bind="click: $parent.activateCustomer, css: { selected: id ==  $parent.activeCustomer().id }">
+                                <span class="glyphicon glyphicon-spin glyphicon-refresh" data-bind="visible: loading() == true"></span> 
+                                <span data-bind="text: clientId + ' - ' + name()"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-8" data-bind="visible: activeCustomer().id !== -1 && activeCustomer().loading() !== true">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>Client Id: <span data-bind="text: activeCustomer().clientId"></span></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button type="button" class="btn btn-primary" id="btn_customerInfo" data-bind="click: setActiveTab.bind($data, 'customerInfo')">
+                        Customer Info
+                    </button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" id="btn_communityProfiles" data-bind="click: setActiveTab.bind($data, 'communityProfiles')">
+                        Community Profiles
+                    </button>
+                </div>
+            </div>
+            <div id="customerInfo" data-bind="visible: activeTab() == 'customerInfo'">
+                
+                <div class="row">
+                    <div class="col-xs-12">&nbsp;</div>
+                    <h4>Customer Information</h4>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" placeholder="Name" class="input-lg form-control" data-bind="value: activeCustomer().name" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="userId">User Id</label>
+                            <input type="text" name="userId" placeholder="User Id" class="input-lg form-control" data-bind="value: activeCustomer().userId" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="text" name="password" placeholder="password" class="input-lg form-control" data-bind="value: activeCustomer().password" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="name">Comments</label>
+                            <input type="text" name="comments" placeholder="Comments" class="input-lg form-control" data-bind="value: activeCustomer().comments" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <h4>Customer Community Profiles</h4>
+                        <div class="form-group">
+                            <label for="backAnchorText">Back Anchor Text</label>
+                            <input type="text" name="backAnchorText" placeholder="Back Anchor Text"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().backAnchorText" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="backAnchorUrl">Back Anchor Url</label>
+                            <input type="text" name="backAnchorUrl" placeholder="Back Anchor Url"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().backAnchorUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="backAnchorTarget">Back Anchor Target</label>
+                            <input type="text" name="backAnchorTarget" placeholder="Back Anchor Target"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().backAnchorTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="communityProfileIds">Community Profile IDs</label>
+                            <input type="text" name="communityProfileIds" placeholder="Community Profile IDs" readonly
+                                   class="input-lg form-control" data-bind="value: activeCustomer().communityProfileIds" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageSrc">Client Logo Image Location</label>
+                            <input type="text"
+                                   name="clientLogoImageSrc" placeholder="Client Logo Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().clientLogoImageSrc" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageHref">Client Logo Image Destination Url</label>
+                            <input type="text" name="clientLogoImageHref" placeholder="Client Logo Image Destinantion Url"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().clientLogoImageHref" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageImageTarget">Client Logo Image Target</label>
+                            <input type="text" name="clientLogoImageTarget" placeholder="Client Logo Image Target"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().clientLogoImageTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="clientLogoImageImageAlt">Client Image Alternative Text</label>
+                            <input type="text" name="clientLogoImageAlt" placeholder="Client Image Alternative Text"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().clientLogoImageAlt" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageSrc">Product Logo Image Url</label>
+                            <input type="text" name="productLogoImageSrc" placeholder="Product Logo Image Url"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().productLogoImageSrc" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageHref">Product Logo Image Destination Url</label>
+                            <input type="text" name="productLogoImageHref" placeholder="Product Logo Image Destination Url"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().productLogoImageHref" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageAlt">Product Image Alternative Text</label>
+                            <input type="text" name="productLogoImageAlt" placeholder="Product Image Alternative Text"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().productLogoImageAlt" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="productLogoImageTarget">Product Logo Image Target</label>
+                            <input type="text" name="productLogoImageTarget" placeholder="Product Logo Image Target"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().productLogoImageTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <h4 class="divider">Home Page Metro eGuide Center</h4>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="mainTitle">Home Page Title</label>
+                            <input type="text" name="mainTitle" placeholder="Home Page Title"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mainTitle" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="centerGraphic">Center Graphic Image Location</label>
+                            <input type="text" name="centerGraphic" placeholder="Center Graphic Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().centerGraphic" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="centerGraphicLinkUrl">Center Graphic Destination Url</label>
+                            <input type="text" name="centerGraphicLinkUrl" placeholder="Center Graphic Destination Url"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().centerGraphicLinkUrl" />
+                        </div>
+                    </div>
+                    <h4>Home Page Metro eGuide Left</h4>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="topLeftGraphicUrl">Top Left Graphic Image Location</label>
+                            <input type="text" name="topLeftGraphicUrl" placeholder="Top Left Graphic Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().topLeftGraphicUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="topLeftGraphicTarget">Top Left Graphic Image Destination URL</label>
+                            <input type="text" name="topLeftGraphicTarget" placeholder="Top Left Graphic Image Destination URL"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().topLeftGraphicTarget" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="leftButtonCount">Left Button Count</label>
+                            <input type="text" name="leftButtonCount" placeholder="Left Button Count"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().leftButtonCount" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="leftButtonLinkPageId">Left Button ID Page</label>
+                            <input type="text" name="leftButtonLinkPageId" placeholder="Left Button ID Page"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().leftButtonLinkPageId" />
+                        </div>
+                    </div>
+                    <h4>Home Page Metro eGuide Right</h4>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="megGraphicUrl">Metro eGuide Image Location</label>
+                            <input type="text" name="megGraphicUrl" placeholder="Metro eGuide Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().megGraphicUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="searchFolders">ID Page Folders to be Searched</label>
+                            <input type="text" name="searchFolders" placeholder="ID Page Folders to be Searched"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().searchFolders" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="rightButtonCount">Right Button Count</label>
+                            <input type="text" name="rightButtonCount" placeholder="Right Button Count"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().rightButtonCount" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="rightButtonLinkPageId">Right Button ID Page</label>
+                            <input type="text" name="rightButtonLinkPageId" placeholder="Right Button ID Page"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().rightButtonLinkPageId" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <h4>Contact Us Page</h4>
+                        <div class="form-group">
+                            <label for="companyGraphicUrl">Contact Us Company Image Location</label>
+                            <input type="text" name="companyGraphicUrl" placeholder="Contact Us Company Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().companyGraphicUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="companyName">Contact Us Company Name</label>
+                            <input type="text" name="companyName" placeholder="Contact Us Company Name"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().companyName" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="email">Contact Us Company Email</label>
+                            <input type="text" name="email" placeholder="Contact Us Company Email"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().email" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="phoneNumber">Contact Us Company Phone Number 1</label>
+                            <input type="text" name="phoneNumber" placeholder="Contact Us Company Phone Number 1"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().phoneNumber" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="phoneNumber2">Contact Us Company Phone Number 2</label>
+                            <input type="text" name="phoneNumber2" placeholder="Contact Us Company Phone Number 2"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().phoneNumber2" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="faxNumber">Contact Us Company Fax Number</label>
+                            <input type="text" name="faxNumber" placeholder="Contact Us Company Fax Number"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().faxNumber" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="streetAddress">Contact Us Company Street Address</label>
+                            <input type="text" name="streetAddress" placeholder="Contact Us Company Street Address"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().streetAddress" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="city">Contact Us Company City</label>
+                            <input type="text" name="city" placeholder="Contact Us Company City"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().city" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="state">Contact Us Company State</label>
+                            <input type="text" name="state" placeholder="Contact Us Company State"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().state" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="zip">Contact Us Company Zip</label>
+                            <input type="text" name="zip" placeholder="Contact Us Company Zip"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().zip" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="otherInformation">Contact Us Company Other Information</label>
+                            <input type="text" name="otherInformation" placeholder="Contact Us Company Other Information"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().otherInformation" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <h4>Mobile Webpage</h4>
+                        <div class="form-group">
+                            <label for="mobileLogoUrl">Mobile Customer Image Location</label>
+                            <input type="text" name="mobileLogoUrl" placeholder="Mobile Customer Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mobileLogoUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="mobileUrl">Redirect to Mobile URL</label>
+                            <input type="text" name="mobileUrl" placeholder="Redirect to Mobile URL"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mobileUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="mobileGraphicPhoneNumber">Mobile Company Graphic URL</label>
+                            <input type="text" name="mobileGraphicPhoneNumber" placeholder="Mobile Company Graphic URL"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mobileGraphicPhoneNumber" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-12">
+                        <h4>Home Page Properties</h4>
+                        <div class="form-group">
+                            <label for="homePageTitle">Home Page Head Title</label>
+                            <input type="text" name="homePageTitle" placeholder="Home Page Head Title"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().homePageTitle" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="seoMetaKeys">SEO Meta Keys</label>
+                            <input type="text" name="seoMetaKeys" placeholder="SEO Meta Keys"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().seoMetaKeys" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="seoMetaDesc">SEO Meta Description</label>
+                            <input type="text" name="seoMetaDesc" placeholder="SEO Meta Description"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().seoMetaDesc" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="analyticsKey">Google Analytics Key</label>
+                            <input type="text" name="analyticsKey" placeholder="Google Analytics Key"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().analyticsKey" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="pageBackgroundColor">Home Page Background Color</label>
+                            <input type="text" name="pageBackgroundColor" placeholder="Home Page Background Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().pageBackgroundColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="mainTitleFontFamily">Home Page Title Font</label>
+                            <input type="text" name="mainTitleFontFamily" placeholder="Home Page Title Font"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mainTitleFontFamily" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="mainTitleFontSize">Home Page Font Size</label>
+                            <input type="text" name="mainTitleFontSize" placeholder="Home Page Font Size"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mainTitleFontSize" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="mainTitleFontColor">Home Page Font Color</label>
+                            <input type="text" name="mainTitleFontColor" placeholder="Home Page Font Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().mainTitleFontColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="centerGraphicBorderColor">Center Graphic Border Color</label>
+                            <input type="text" name="centerGraphicBorderColor" placeholder="Center Graphic Border Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().centerGraphicBorderColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="centerGraphicBorderThickness">Center Graphic Border Thickness</label>
+                            <input type="text" name="centerGraphicBorderThickness" placeholder="Center Graphic Border Thickness"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().centerGraphicBorderThickness" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="copyrightFontSize">Copyright Font Size</label>
+                            <input type="text" name="copyrightFontSize" placeholder="Copyright Font Size"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().copyrightFontSize" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="copyrightFontColor">Copyright Font Color</label>
+                            <input type="text" name="copyrightFontColor" placeholder="Copyright Font Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().copyrightFontColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="copyrightFontFamily">Copyright Font Family</label>
+                            <input type="text" name="copyrightFontFamily" placeholder="Copyright Font Family"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().copyrightFontFamily" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="realtorGraphicUrl">Realtor Image Location</label>
+                            <input type="text" name="realtorGraphicUrl" placeholder="Realtor Image Location"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().realtorGraphicUrl" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonBorderThickness">Button Border Thickness</label>
+                            <input type="text" name="buttonBorderThickness" placeholder="Button Border Thickness"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonBorderThickness" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonBorderColor">Button Border Color</label>
+                            <input type="text" name="buttonBorderColor" placeholder="Button Border Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonBorderColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonTitleFontColor">Button Title Font Color</label>
+                            <input type="text" name="buttonTitleFontColor" placeholder="Button Title Font Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonTitleFontColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonTitleFontFamily">Button Title Font Family</label>
+                            <input type="text" name="buttonTitleFontFamily" placeholder="Button Title Font Family"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonTitleFontFamily" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonTitleFontWeight">Button Title Font Weight</label>
+                            <input type="text" name="buttonTitleFontWeight" placeholder="Button Title Font Weight"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonTitleFontWeight" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonBackgroundColor">Button Background Color</label>
+                            <input type="text" name="buttonBackgroundColor" placeholder="Button Background Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonBackgroundColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonMouseoverBgColor">Button Mouseover Color</label>
+                            <input type="text" name="buttonMouseoverBgColor" placeholder="Button Mouseover Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonMouseoverBgColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonMouseoverBorderColor">Button Mouseover Border Color</label>
+                            <input type="text" name="buttonMouseoverBorderColor" placeholder="Button Mouseover Border Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonMouseoverBorderColor" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="buttonMouseoverFontColor">Button Mouseover Font Color</label>
+                            <input type="text" name="buttonMouseoverFontColor" placeholder="Button Mouseover Font Color"
+                                   class="input-lg form-control" data-bind="value: activeCustomer().buttonMouseoverFontColor" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-6">
+                        <button type="button" class="btn btn-lg btn-danger" data-bind="click: confirmDeleteCustomer">Delete</button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="button" 
+                                class="btn btn-lg btn-success pull-right"
+                                data-bind="click: updateCustomer">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="communityProfiles" data-bind="visible: activeTab() == 'communityProfiles'">
+                <div class="row">
+                <div class="col-xs-12">&nbsp;</div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Folders
+                            </div>
+                            <div class="panel-body">
+                                <div id="folderDDList" data-bind="visible: foldersList().length > 0">
+                                    <div class="pull-left" data-bind="template: {name: 'folder-dd-template', foreach: foldersList}"></div>&nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Pages
+                            </div>
+                            <div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
+                                <div data-bind="visible: pages().length > 0">
+                                    <ul class="folder-list" data-bind="foreach: pages">
+                                        <li>
+                                            <a href="#" data-bind="click: $parent.addNewCommunityProfile">
+                                                <span data-bind="text: title"></span>
+                                                <span class="pull-right">
+                                                    <span class="glyphicon glyphicon-plus text-success"></span> 
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div data-bind="visible: pages().length <= 0">
+                                No Pages
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Selected Profiles
+                            </div>
+                            <div class="panel-body" style="max-height: 600px; overflow-y: scroll;">
+                                <ul class="folder-list" data-bind="foreach: activeCustomer().communityProfiles">
+                                    <li>
+                                        <a href="#" data-bind="click: $parent.confirmDeleteCommunityProfile">
+                                            <span data-bind="text: title"></span>
+                                            <span class="pull-right">
+                                                <span class="glyphicon glyphicon-remove text-danger"></span> 
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-bind="visible: activeCustomer().loading() === true">
+            <h1 class="text-center">
+                <span class="glyphicon glyphicon-spin glyphicon-refresh"></span>
+            </h1>
+        </div>
+    </div>
+</div>
+
+@{ await Html.RenderPartialAsync("_CreateCustomerModal");}
+@{ await Html.RenderPartialAsync("_CommunityProfileDeleteModal");}
+@{ await Html.RenderPartialAsync("_CustomerDeleteModal");}
+
+@section scripts {
+    @{ await Html.RenderPartialAsync("_DropdownFolderList"); }
+    <script src="~/js/bundles/customerManager.js"></script>
+
+    <script>
+        //This is not safe at all, we're assuming it's going to be an array, add some checking
+        ko.utils.stringStartsWithAny = function (string, startsWithArray) {
+            string = string || "";
+
+            return startsWithArray.every(function (char) {
+                return string.substring(0, char.length) === char ? true : false;
+            });
+        }
+
+        $(document).ready(function () {
+            var customerVm = new CustomerVm();
+            ko.applyBindings(customerVm);
+        });
+    </script>
+
+}

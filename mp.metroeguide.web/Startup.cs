@@ -48,6 +48,10 @@ namespace mp.metroeguide.web
                     "js/scripts/clientManager/models.js",
                     "js/scripts/clientManager/clientVm.js");
 
+                pipeline.AddJavaScriptBundle("/js/bundles/customerManager.js", 
+                    "js/scripts/customerManager/models.js",
+                    "js/scripts/customerManager/customerVm.js");
+
                 pipeline.AddJavaScriptBundle("/js/bundles/pageCopier.js", 
                     "js/scripts/copy/models.js", 
                     "js/scripts/copy/copyVm.js");

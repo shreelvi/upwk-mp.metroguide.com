@@ -1,5 +1,5 @@
-﻿var baseUrl = 'http://localhost:64441';
-//var baseUrl = 'http://api.metroeguide.com';
+﻿//var baseUrl = 'http://localhost:64441'; //40893
+var baseUrl = 'http://api.metroeguide.com';
 var legacyBaseUrl = 'http://legacyapi.metroeguide.com';
 
 var dataService = {
@@ -173,6 +173,36 @@ var dataService = {
 
     },
 
+    //CUSTOMERS
+    customers: {
+        getAll: function () {
+            var getCustomersLinkUrl = baseUrl + '/customers?format=json';
+            return $.ajax({ type: 'GET', url: getCustomersLinkUrl });
+        },
+        get: function (id) {
+            var getCustomerUrl = baseUrl + '/customers?id=' + id + "&format=json";
+            return $.ajax({ type: 'GET', url: getCustomerUrl });
+        },
+        getCondensed: function () {
+            var getFilteredCustomersUrl = baseUrl + '/customers?condensed=true&format=json';
+            return $.ajax({ type: 'GET', url: getFilteredCustomersUrl });
+        },
+        create: function (customer) {
+            var createCustomerUrl = baseUrl + "/customers";
+            return $.ajax({ type: 'POST', url: createCustomerUrl, data: customer, contentType: "application/json" });
+        },
+        update: function (customer) {
+            var updateCustomerUrl = baseUrl + '/customers';
+            return $.ajax({ method: "PUT", url: updateCustomerUrl, data: customer, contentType: "application/json" });
+        },
+        remove: function (id) {
+            var deleteCustomerLinksUrl = baseUrl + '/customers?id=' + id;
+            return $.ajax({ type: 'DELETE', url: deleteCustomerLinksUrl });
+        }
+
+    },
+
+
     //ILINKS
     iLinks: {
         getAll: function (clientId) {
@@ -209,6 +239,21 @@ var dataService = {
         }
     },
 
+    customerCommunityProfiles: {
+        getAll: function (clientId) {
+            var getCommunityProfilesUrl = baseUrl + '/customers/' + clientId + "/communityProfiles?format=json";
+            return $.ajax({ type: 'GET', url: getCommunityProfilesUrl });
+        },
+        create: function (communityProfile) {
+            var createCommunityProfileUrl = baseUrl + '/communityProfiles';
+            return $.ajax({ method: "POST", url: createCommunityProfileUrl, data: communityProfile, contentType: "application/json" });
+        },
+        remove: function (clientId, pageId) {
+            var deleteCommunityProfileUrl = baseUrl + '/communityProfiles?clientId=' + clientId + '&pageId=' + pageId;
+            return $.ajax({ method: 'DELETE', url: deleteCommunityProfileUrl });
+        }
+    },
+
     //CHECKED LINKS
     checkedLinks: {
         getAll: function (type) {
@@ -227,13 +272,17 @@ var dataService = {
             var updateCheckedLinkUrl = baseUrl + '/linkChecker';
             return $.ajax({ method: 'PUT', url: updateCheckedLinkUrl, data: checkedLinkUpdate, contentType: 'application/json' });
         },
-        remove: function (id) {
-            var deleteCheckedLinkLogUrl = baseUrl + '/linkChecker?id=' + id;
-            return $.ajax({ method: 'DELETE', url: deleteCheckedLinkLogUrl });
+        //remove: function (id) {
+        //    var deleteCheckedLinkLogUrl = baseUrl + '/linkChecker?id=' + id;
+        //    return $.ajax({ method: 'DELETE', url: deleteCheckedLinkLogUrl });
+        //},
+        remove: function (deleteRequest) {
+            var deleteCheckedLinkLogUrl = baseUrl + '/linkChecker';
+            return $.ajax({ method: 'DELETE', url: deleteCheckedLinkLogUrl, data: deleteRequest, contentType: 'application/json' });
         },
-        suspend: function (suspendRequest) {
-            var suspendUrl = baseUrl + '/linkChecker/suspend';
-            return $.ajax({ method: 'PUT', url: suspendUrl, data: suspendRequest, contentType: 'application/json' });
+        elevate: function (elevateRequest) {
+            var elevateUrl = baseUrl + '/linkChecker/elevate';
+            return $.ajax({ method: 'PUT', url: elevateUrl, data: elevateRequest, contentType: 'application/json' });
         },
         deactivateLink: function (deactivateRequest) {
             var deactivateUrl = baseUrl + '/linkChecker/deactivate';
@@ -243,6 +292,6 @@ var dataService = {
             var commentUrl = baseUrl + '/linkChecker/comment';
             return $.ajax({ method: 'PUT', url: commentUrl, data: commentRequest, contentType: 'application/json' });
         }
-    },
+    }
 
 };

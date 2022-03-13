@@ -2,9 +2,15 @@
 @{
     ViewBag.Title = "Link Viewer";
 }
-
 <h2>Link Viewer</h2>
-
+<script type="text/javascript">
+    function getPage() {
+        var pageId = document.getElementById('pageId');
+        var val = pageId.value;
+        if (val != null && val > 0)
+            window.open(document.URL + '?id=' + val, '_self');
+    }
+</script>
 @if (ViewBag.PageId == null)
 {
     <div class="col-xs-12" id="" style="min-height: 600px;">
@@ -13,7 +19,7 @@
                 <label for="pageId">Page Id:</label>
                 <input type="text" name="pageId" id="pageId" class="form-control" placeholder="Enter Page Id to load links" />
             </div>
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" data-bind="click: getPage();">
                 <span class="glyphicon glyphicon-download"></span>
                 Load
             </button>
@@ -116,7 +122,6 @@ else
         </div>
     </div>
 }
-
 <div class="modal fade" data-bind="showModal: showConfirmDeleteDialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -139,7 +144,6 @@ else
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 
 @section scripts {
     @{

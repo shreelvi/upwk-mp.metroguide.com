@@ -8,22 +8,23 @@
 <div class="row">
     <div class="col-md-4">
         <div class="btn-group" style="margin: 20px 0;">
-
-            <button type="button" class="btn" 
+            <button type="button" class="btn"
                     data-bind="css: { 'btn-success': activeTab() == 'good', 'btn-default': activeTab() != 'good'},  click: activateGoodLinks">
                 Good Links
             </button>
-
-            <button type="button" class="btn" 
+            <button type="button" class="btn"
                     data-bind="css: { 'btn-success': activeTab() == 'unmatched', 'btn-default': activeTab() != 'unmatched'}, click: activateUnmatchedLinks">
                 Redirected Links
             </button>
-
-            <button type="button" class="btn" 
+            <button type="button" class="btn"
                     data-bind="css: {'btn-success' : activeTab() == 'bad', 'btn-default': activeTab() != 'bad'},  click: activateBadLinks">
                 Bad Links
             </button>
 
+            <button type="button" class="btn"
+                    data-bind="css: { 'btn-success': activeTab() == 'elevated', 'btn-default': activeTab() != 'elevated'}, click: activateElevatedLinks">
+                Elevated Links
+            </button>
         </div>
     </div>
     <div class="col-md-8 text-right">
@@ -138,13 +139,13 @@
                             <span class="glyphicon glyphicon-eye-open"></span> See Pages
                         </button>
 
-                        <button class="btn btn-block btn-info" data-bind="click: $parent.whitelist">
+                        <button class="btn btn-block btn-info" data-bind="visible: false">
                             <span class="glyphicon glyphicon-plus"></span> Whitelist
                         </button>
 
 
-                        <button class="btn btn-block btn-warning" data-bind="click: $parent.suspend">
-                            <span class="glyphicon glyphicon-time"></span> Suspend
+                        <button class="btn btn-block btn-warning" data-bind="click: $parent.elevate">
+                            <span class="glyphicon glyphicon-time"></span> Elevate
                         </button>
 
                         <button class="btn btn-block btn-danger" data-bind="click: $parent.deactivateConfirm">
@@ -184,7 +185,6 @@
 @{ await Html.RenderPartialAsync("_UrlUpdateModal"); }
 @{ await Html.RenderPartialAsync("_CommentUpdateModal"); }
 @{ await Html.RenderPartialAsync("_UrlDeleteModal"); }
-
 
 @section scripts {
     <script src="~/js/bundles/linkChecker.js"></script>

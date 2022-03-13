@@ -72,6 +72,7 @@
                 links.push({
                     id: link.linkId,
                     url: self.activeLink().url(),
+                    urlId: self.activeLink().urlId,
                     title: self.activeLink().title(),
                     isSuspended: self.activeLink().isSuspended(),
                     isElevated: self.activeLink().isElevated(),

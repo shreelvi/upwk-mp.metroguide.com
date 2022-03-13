@@ -1,0 +1,26 @@
+﻿
+<div class="modal fade" data-bind="showModal: pendingDeleteCustomer, with: pendingDeleteCustomer">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>
+                            Are you sure you wish to remove this customer?
+                        </h4>
+                    </div>
+                    <div class="col-xs-12">
+                        <p data-bind="text: name"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" data-bind="click: $parent.deleteCustomer">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Remove
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
