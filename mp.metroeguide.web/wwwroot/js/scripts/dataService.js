@@ -1,5 +1,5 @@
-﻿//var baseUrl = 'http://localhost:64441'; //40893
-var baseUrl = 'http://api.metroeguide.com';
+﻿var baseUrl = 'http://localhost:5003/api'; //40893
+//var baseUrl = 'http://api.metroeguide.com';
 var legacyBaseUrl = 'http://legacyapi.metroeguide.com';
 
 var dataService = {
@@ -7,19 +7,19 @@ var dataService = {
     //FOLDERS
     folders: {
         findBy: function(type, value) {
-            var folderUrl = baseUrl + '/folders/find?format=json&' + type + '=' + encodeURIComponent(value);
+            var folderUrl = baseUrl + '/folders/find?' + type + '=' + encodeURIComponent(value);
             return $.ajax({ type: 'GET', url: folderUrl });
         },
         getAll: function (id) {
-            var folderUrl = baseUrl + '/folders?format=json&parentFolderId=' + id;
+            var folderUrl = baseUrl + '/folders?parentFolderId=' + id;
             return $.ajax({ type: 'GET', url: folderUrl });
         },
         get: function (id) {
-            var folderUrl = baseUrl + '/folders?format=json&id=' + id;
+            var folderUrl = baseUrl + '/folders?id=' + id;
             return $.ajax({ type: 'GET', url: folderUrl });
         },
         getHierarchy: function(id) {
-            var folderStructureUrl = baseUrl + '/folderHierarchy?format=json&id=' + id + "&getHierarchy=true";
+            var folderStructureUrl = baseUrl + '/folders/folderHierarchy?id=' + id + "&getHierarchy=true";
             return $.ajax({ type:'GET', url:folderStructureUrl });
         },
         create: function (folder) {
@@ -180,11 +180,11 @@ var dataService = {
             return $.ajax({ type: 'GET', url: getCustomersLinkUrl });
         },
         get: function (id) {
-            var getCustomerUrl = baseUrl + '/customers?id=' + id + "&format=json";
+            var getCustomerUrl = baseUrl + '/customers?id=' + id;
             return $.ajax({ type: 'GET', url: getCustomerUrl });
         },
         getCondensed: function () {
-            var getFilteredCustomersUrl = baseUrl + '/customers?condensed=true&format=json';
+            var getFilteredCustomersUrl = baseUrl + '/customers?condensed=true';
             return $.ajax({ type: 'GET', url: getFilteredCustomersUrl });
         },
         create: function (customer) {
@@ -257,10 +257,10 @@ var dataService = {
     //CHECKED LINKS
     checkedLinks: {
         getAll: function (type) {
-            var getCheckedLinksUrl = baseUrl + '/linkChecker?format=json';
+            var getCheckedLinksUrl = baseUrl + '/linkChecker?';
 
             if (type != null)
-                getCheckedLinksUrl = getCheckedLinksUrl + "&type=" + type;
+                getCheckedLinksUrl = getCheckedLinksUrl + "type=" + type;
 
             return $.ajax({ type: 'GET', url: getCheckedLinksUrl });
         },
